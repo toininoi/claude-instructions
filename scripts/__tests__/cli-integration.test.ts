@@ -337,7 +337,7 @@ describe("CLI Integration", () => {
       "kata.md",
       "create-adr.md",
       "research.md",
-      "commitlint-checklist-nodejs.md",
+      "commit-hook-checklist.md",
       "upgrade-deps.md",
     ];
 

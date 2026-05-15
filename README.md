@@ -272,7 +272,7 @@ flowchart TB
 - `/kata` - Generate a TDD practice challenge with boilerplate test setup
 - `/create-adr` - Create a new Architecture Decision Record (ADR)
 - `/research` - Research a problem in parallel via web docs, web search, codebase exploration, and deep ultrathink
-- `/commitlint-checklist-nodejs` - Audit commit hook automation for Node.js projects
+- `/commit-hook-checklist` - Audit commit-hook automation as gates against AI slop and broken commits (Node.js, Go, polyglot)
 - `/upgrade-deps` - Check for dependency upgrades and assess safety before updating
 - `/gastown-setup` - Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
 
