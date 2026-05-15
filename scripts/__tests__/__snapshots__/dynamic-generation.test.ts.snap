@@ -1610,6 +1610,154 @@ Gap: $ARGUMENTS
 "
 `;
 
+exports[`dynamic generation snapshots > with beads flag > should match snapshot for gastown-setup.md 1`] = `
+"---
+description: Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
+argument-hint: (no arguments - interactive)
+_hint: Bootstrap Gas Town
+_category: Utilities
+_order: 51
+---
+
+## General Guidelines
+
+### Output Style
+- **Never explicitly mention TDD** in code, comments, commits, PRs, or issues
+- Write natural, descriptive code without meta-commentary about the development process
+- The code should speak for itself - TDD is the process, not the product
+
+
+Beads is available for task tracking. Use \`mcp__beads__*\` tools to manage issues (the user interacts via \`bd\` commands).
+
+
+
+
+# Gas Town Setup
+
+Bootstrap a new [Gas Town](https://github.com/steveyegge/gastown) installation —
+the multi-agent workspace from Steve Yegge ([overview post](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04)).
+
+This command leans on the **upstream Gas Town docs** rather than duplicating
+install steps that will drift. Your job is to walk the user through the
+decision points and hand off to the canonical instructions at the right time.
+
+## Phase 0: Prerequisite check
+
+Verify the environment before suggesting anything:
+
+| Check | Pass condition |
+|-------|----------------|
+| \`gt\` binary present | \`command -v gt\` succeeds |
+| \`tmux\` present | \`command -v tmux\` succeeds |
+| \`~/gt/\` absent or empty | First-time install only — don't clobber an existing town |
+
+If \`~/gt/\` already exists and contains a \`settings/\` or \`mayor/\` dir, **stop**.
+Show the user \`gt status\` and let them decide whether to repair, extend, or
+nuke before reinstalling. Do not proceed past this point automatically.
+
+If \`gt\` is missing, point the user at the install instructions in
+[gastown/README](https://github.com/steveyegge/gastown#installation) and exit.
+
+## Phase 1: Ask the user which flavor they want
+
+Use \`AskUserQuestion\`:
+
+**Question: "Which Gas Town flavor do you want to bootstrap?"** (header: "Flavor")
+
+Options:
+
+1. **Default (autonomous)** — "Out-of-the-box Gas Town with full autonomous patrols. Higher token burn, more emergent behavior."
+2. **Manual mode (me-and-my-crew preset)** — "Apply the [wbern/gastown-me-and-my-crew](https://github.com/wbern/gastown-me-and-my-crew) preset: disables autonomous patrols, keeps crew workers only. Lower token burn, you drive the work."
+3. **Skip preset for now** — "Just install default Gas Town. I can apply a preset later by visiting the preset repo."
+
+Note for the user: the manual-mode preset is one config among many. It is the
+maintainer's personal setup, shared **for friends who want the same defaults** —
+not a required component of Gas Town. The preset can always be applied or
+removed later.
+
+## Phase 2: Default install
+
+Regardless of preset choice, the underlying install is the same. Hand the user
+off to the upstream quickstart:
+
+> Follow the installation steps in
+> [gastown/README](https://github.com/steveyegge/gastown#installation).
+> Come back here once \`gt up\` succeeds and \`gt status\` shows the daemon
+> running.
+
+Don't re-paste the steps — they evolve, and the upstream docs are the source
+of truth.
+
+## Phase 3: Apply the me-and-my-crew preset (if chosen)
+
+If the user picked option 2 in Phase 1, after the default install is up:
+
+\`\`\`bash
+# 1. Clone the preset repo somewhere outside ~/gt/
+git clone https://github.com/wbern/gastown-me-and-my-crew.git ~/gastown-presets/me-and-my-crew
+cd ~/gastown-presets/me-and-my-crew
+
+# 2. Follow the preset's own README for what to copy/merge into ~/gt/
+#    (settings overrides, daemon tunings, disabled patrols, etc.)
+cat README.md
+\`\`\`
+
+Defer to the preset repo's instructions — it documents which files merge into
+\`~/gt/settings/\` and \`~/gt/mayor/\`, and how to verify the tuning took effect.
+Do not transcribe those steps here.
+
+## Phase 4: CLAUDE.md interoperability note
+
+Gas Town composes \`CLAUDE.md\` files at three levels and Claude Code reads all
+of them. Worth understanding before the user starts customizing:
+
+| Level | Path | Scope |
+|-------|------|-------|
+| Global | \`~/.claude/CLAUDE.md\` (or \`~/.claude-accounts/<handle>/CLAUDE.md\`) | Every project, every agent |
+| Gas Town root | \`~/gt/CLAUDE.md\` | Every rig and crew member in this town |
+| Rig | \`~/gt/<rig>/CLAUDE.md\` | Just that rig (committed to the rig's git history) |
+
+Rig \`CLAUDE.md\` files should be **committed**, not gitignored — they're
+shared instructions for anyone (human or agent) working in the repo.
+
+Out of scope for this command, but worth knowing: instructions cascade, more
+specific levels take precedence, and the rig-level file travels with the
+project when others clone it.
+
+## Phase 5: Verify
+
+\`\`\`bash
+gt status                  # Daemon + services up?
+gt prime                   # If you're in a crew session, fetch identity
+gt mayor at                # Drop into the mayor's session to confirm it's alive
+\`\`\`
+
+If anything looks off — daemon not running, services missing, mayor not
+responding — the troubleshooting section in the upstream docs is more
+current than anything I could write here.
+
+## Phase 6: Tell the user what's next
+
+\`\`\`
+✓ Gas Town installed at ~/gt/
+
+Add your first rig:        gt rig add <repo-url>
+Check status:              gt status
+Open the mayor:            gt mayor at
+Apply a different preset:  https://github.com/wbern/gastown-me-and-my-crew
+                           (or write your own settings overrides)
+\`\`\`
+
+---
+
+**User arguments:**
+
+Gastown-setup: $ARGUMENTS
+
+**End of user arguments**
+"
+`;
+
 exports[`dynamic generation snapshots > with beads flag > should match snapshot for green.md 1`] = `
 "---
 description: Execute TDD Green Phase - write minimal implementation to pass the failing test
@@ -4957,6 +5105,155 @@ Limitations:
 "
 `;
 
+exports[`dynamic generation snapshots > with beads flag > should match snapshot for worktree-setup.md 1`] = `
+"---
+description: Initial setup of a repo for the worktree-friendly [repo]/main layout, with optional main.2/main.3 parallel copies for trunk-based work
+argument-hint: <repo-url-or-existing-clone-path> [target-parent-dir]
+_hint: Setup worktree layout
+_category: Worktree Management
+_order: 0
+---
+
+## General Guidelines
+
+### Output Style
+- **Never explicitly mention TDD** in code, comments, commits, PRs, or issues
+- Write natural, descriptive code without meta-commentary about the development process
+- The code should speak for itself - TDD is the process, not the product
+
+
+Beads is available for task tracking. Use \`mcp__beads__*\` tools to manage issues (the user interacts via \`bd\` commands).
+
+
+
+
+# Worktree Layout Setup
+
+Bootstrap the directory structure that \`/worktree-add\` and \`/worktree-cleanup\`
+expect. The layout this command produces:
+
+\`\`\`
+<parent>/<repo-name>/main             # primary worktree on the default branch
+<parent>/<repo-name>/<type>/<slug>    # feature worktrees added by /worktree-add
+<parent>/<repo-name>/main.2           # optional: additional local copy of main
+<parent>/<repo-name>/main.3           # (for parallel trunk-based work)
+\`\`\`
+
+**User arguments:**
+
+Worktree-setup: $ARGUMENTS
+
+**End of user arguments**
+
+## Phase 0: Gas Town incompatibility check (HARD ABORT)
+
+This command is **intentionally incompatible** with Gas Town. Gas Town manages
+its own rig/crew topology, and this layout would shadow it. Abort if any of
+the following is true:
+
+| Detection | Condition |
+|-----------|-----------|
+| Gas Town home present | \`~/gt/\` exists |
+| Currently inside a Gas Town tree | Working directory resolves under \`~/gt/\` |
+| Target parent resolves under \`~/gt/\` | Resolved target path starts with \`~/gt/\` |
+| \`gt\` binary present AND target inside a tracked rig | \`command -v gt\` succeeds and \`gt status --json\` lists target as a rig path |
+
+If any check fails, print:
+
+> Gas Town detected — this setup would conflict with \`gt\`'s rig topology.
+> Use \`gt rig add <repo-url>\` instead. Exiting without changes.
+
+…and exit. Do not proceed under any flag.
+
+## Phase 1: Parse arguments and detect input mode
+
+Possible input shapes:
+
+| Input | Mode |
+|-------|------|
+| Git URL (\`https://...\` or \`git@...\`) | **fresh-clone** |
+| Path to a regular clone with \`.git/\` (not already inside a worktree layout) | **convert** |
+| Path inside an existing \`<repo>/main\` (one level deep) | **add-main-copy** (just adds another \`main.N\`) |
+| No argument | Ask the user interactively |
+
+For fresh-clone and convert modes, derive \`<repo-name>\` from the URL or
+existing clone's \`origin\` remote (strip trailing \`.git\`). Default
+\`<target-parent-dir>\` to the current working directory.
+
+Show the user the resolved plan before doing anything destructive:
+
+\`\`\`
+Mode:        <fresh-clone | convert | add-main-copy>
+Repo name:   <repo-name>
+Target:      <parent>/<repo-name>/main
+Source:      <url or existing path>
+\`\`\`
+
+Ask for confirmation. Abort on "no".
+
+## Phase 2: Execute
+
+### Fresh-clone mode
+
+\`\`\`bash
+mkdir -p "<parent>/<repo-name>"
+git clone "<repo-url>" "<parent>/<repo-name>/main"
+cd "<parent>/<repo-name>/main"
+\`\`\`
+
+### Convert mode
+
+Refuse to convert if the source clone:
+
+- has uncommitted changes (\`git status --porcelain\` non-empty)
+- has existing worktrees registered (\`git worktree list\` shows more than one)
+- is already inside another worktree layout (parent dir already named like a repo with sibling worktrees)
+
+Otherwise:
+
+\`\`\`bash
+mkdir -p "<parent>/<repo-name>"
+mv "<existing-clone>" "<parent>/<repo-name>/main"
+cd "<parent>/<repo-name>/main"
+\`\`\`
+
+### Add-main-copy mode
+
+Used when the user wants \`main.2\`, \`main.3\`, etc. — local copies of the
+default branch for trunk-based parallel work:
+
+\`\`\`bash
+# From inside <repo>/main:
+N=$(ls ../ | grep -E '^main(\\.[0-9]+)?$' | wc -l)   # count existing main copies
+git worktree add "../main.$((N+1))" main
+\`\`\`
+
+The new worktree shares the same branch as \`main\`. This is intentional —
+trunk-based flow lets two sessions iterate on the same branch with separate
+working states. Use with care; coordinate which copy is "the one" that
+pushes.
+
+## Phase 3: Sanity check
+
+\`\`\`bash
+git worktree list
+\`\`\`
+
+The primary worktree should be \`<repo-name>/main\`. Any \`main.N\` copies
+should appear with the same branch name as \`main\`.
+
+## Phase 4: Tell the user what's next
+
+\`\`\`
+✓ Layout ready at <parent>/<repo-name>/
+
+Add a feature worktree:   /worktree-add <branch-name-or-issue-url>
+Clean up merged worktrees: /worktree-cleanup
+Add another main copy:    /worktree-setup (from inside <repo>/main)
+\`\`\`
+"
+`;
+
 exports[`dynamic generation snapshots > without beads flag > should match snapshot for add-command.md 1`] = `
 "---
 description: Guide for creating new slash commands
@@ -6480,6 +6777,153 @@ If there are no gaps, confirm that everything discussed has been addressed.
 **User arguments:**
 
 Gap: $ARGUMENTS
+
+**End of user arguments**
+"
+`;
+
+exports[`dynamic generation snapshots > without beads flag > should match snapshot for gastown-setup.md 1`] = `
+"---
+description: Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
+argument-hint: (no arguments - interactive)
+_hint: Bootstrap Gas Town
+_category: Utilities
+_order: 51
+---
+
+## General Guidelines
+
+### Output Style
+- **Never explicitly mention TDD** in code, comments, commits, PRs, or issues
+- Write natural, descriptive code without meta-commentary about the development process
+- The code should speak for itself - TDD is the process, not the product
+
+
+
+
+
+
+# Gas Town Setup
+
+Bootstrap a new [Gas Town](https://github.com/steveyegge/gastown) installation —
+the multi-agent workspace from Steve Yegge ([overview post](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04)).
+
+This command leans on the **upstream Gas Town docs** rather than duplicating
+install steps that will drift. Your job is to walk the user through the
+decision points and hand off to the canonical instructions at the right time.
+
+## Phase 0: Prerequisite check
+
+Verify the environment before suggesting anything:
+
+| Check | Pass condition |
+|-------|----------------|
+| \`gt\` binary present | \`command -v gt\` succeeds |
+| \`tmux\` present | \`command -v tmux\` succeeds |
+| \`~/gt/\` absent or empty | First-time install only — don't clobber an existing town |
+
+If \`~/gt/\` already exists and contains a \`settings/\` or \`mayor/\` dir, **stop**.
+Show the user \`gt status\` and let them decide whether to repair, extend, or
+nuke before reinstalling. Do not proceed past this point automatically.
+
+If \`gt\` is missing, point the user at the install instructions in
+[gastown/README](https://github.com/steveyegge/gastown#installation) and exit.
+
+## Phase 1: Ask the user which flavor they want
+
+Use \`AskUserQuestion\`:
+
+**Question: "Which Gas Town flavor do you want to bootstrap?"** (header: "Flavor")
+
+Options:
+
+1. **Default (autonomous)** — "Out-of-the-box Gas Town with full autonomous patrols. Higher token burn, more emergent behavior."
+2. **Manual mode (me-and-my-crew preset)** — "Apply the [wbern/gastown-me-and-my-crew](https://github.com/wbern/gastown-me-and-my-crew) preset: disables autonomous patrols, keeps crew workers only. Lower token burn, you drive the work."
+3. **Skip preset for now** — "Just install default Gas Town. I can apply a preset later by visiting the preset repo."
+
+Note for the user: the manual-mode preset is one config among many. It is the
+maintainer's personal setup, shared **for friends who want the same defaults** —
+not a required component of Gas Town. The preset can always be applied or
+removed later.
+
+## Phase 2: Default install
+
+Regardless of preset choice, the underlying install is the same. Hand the user
+off to the upstream quickstart:
+
+> Follow the installation steps in
+> [gastown/README](https://github.com/steveyegge/gastown#installation).
+> Come back here once \`gt up\` succeeds and \`gt status\` shows the daemon
+> running.
+
+Don't re-paste the steps — they evolve, and the upstream docs are the source
+of truth.
+
+## Phase 3: Apply the me-and-my-crew preset (if chosen)
+
+If the user picked option 2 in Phase 1, after the default install is up:
+
+\`\`\`bash
+# 1. Clone the preset repo somewhere outside ~/gt/
+git clone https://github.com/wbern/gastown-me-and-my-crew.git ~/gastown-presets/me-and-my-crew
+cd ~/gastown-presets/me-and-my-crew
+
+# 2. Follow the preset's own README for what to copy/merge into ~/gt/
+#    (settings overrides, daemon tunings, disabled patrols, etc.)
+cat README.md
+\`\`\`
+
+Defer to the preset repo's instructions — it documents which files merge into
+\`~/gt/settings/\` and \`~/gt/mayor/\`, and how to verify the tuning took effect.
+Do not transcribe those steps here.
+
+## Phase 4: CLAUDE.md interoperability note
+
+Gas Town composes \`CLAUDE.md\` files at three levels and Claude Code reads all
+of them. Worth understanding before the user starts customizing:
+
+| Level | Path | Scope |
+|-------|------|-------|
+| Global | \`~/.claude/CLAUDE.md\` (or \`~/.claude-accounts/<handle>/CLAUDE.md\`) | Every project, every agent |
+| Gas Town root | \`~/gt/CLAUDE.md\` | Every rig and crew member in this town |
+| Rig | \`~/gt/<rig>/CLAUDE.md\` | Just that rig (committed to the rig's git history) |
+
+Rig \`CLAUDE.md\` files should be **committed**, not gitignored — they're
+shared instructions for anyone (human or agent) working in the repo.
+
+Out of scope for this command, but worth knowing: instructions cascade, more
+specific levels take precedence, and the rig-level file travels with the
+project when others clone it.
+
+## Phase 5: Verify
+
+\`\`\`bash
+gt status                  # Daemon + services up?
+gt prime                   # If you're in a crew session, fetch identity
+gt mayor at                # Drop into the mayor's session to confirm it's alive
+\`\`\`
+
+If anything looks off — daemon not running, services missing, mayor not
+responding — the troubleshooting section in the upstream docs is more
+current than anything I could write here.
+
+## Phase 6: Tell the user what's next
+
+\`\`\`
+✓ Gas Town installed at ~/gt/
+
+Add your first rig:        gt rig add <repo-url>
+Check status:              gt status
+Open the mayor:            gt mayor at
+Apply a different preset:  https://github.com/wbern/gastown-me-and-my-crew
+                           (or write your own settings overrides)
+\`\`\`
+
+---
+
+**User arguments:**
+
+Gastown-setup: $ARGUMENTS
 
 **End of user arguments**
 "
@@ -9735,5 +10179,153 @@ Limitations:
 - Supports macOS and Linux only (no Windows support)
 - Requires MCP server or CLI for git hosting provider (GitHub, GitLab, etc.)
 </important_notes>
+"
+`;
+
+exports[`dynamic generation snapshots > without beads flag > should match snapshot for worktree-setup.md 1`] = `
+"---
+description: Initial setup of a repo for the worktree-friendly [repo]/main layout, with optional main.2/main.3 parallel copies for trunk-based work
+argument-hint: <repo-url-or-existing-clone-path> [target-parent-dir]
+_hint: Setup worktree layout
+_category: Worktree Management
+_order: 0
+---
+
+## General Guidelines
+
+### Output Style
+- **Never explicitly mention TDD** in code, comments, commits, PRs, or issues
+- Write natural, descriptive code without meta-commentary about the development process
+- The code should speak for itself - TDD is the process, not the product
+
+
+
+
+
+
+# Worktree Layout Setup
+
+Bootstrap the directory structure that \`/worktree-add\` and \`/worktree-cleanup\`
+expect. The layout this command produces:
+
+\`\`\`
+<parent>/<repo-name>/main             # primary worktree on the default branch
+<parent>/<repo-name>/<type>/<slug>    # feature worktrees added by /worktree-add
+<parent>/<repo-name>/main.2           # optional: additional local copy of main
+<parent>/<repo-name>/main.3           # (for parallel trunk-based work)
+\`\`\`
+
+**User arguments:**
+
+Worktree-setup: $ARGUMENTS
+
+**End of user arguments**
+
+## Phase 0: Gas Town incompatibility check (HARD ABORT)
+
+This command is **intentionally incompatible** with Gas Town. Gas Town manages
+its own rig/crew topology, and this layout would shadow it. Abort if any of
+the following is true:
+
+| Detection | Condition |
+|-----------|-----------|
+| Gas Town home present | \`~/gt/\` exists |
+| Currently inside a Gas Town tree | Working directory resolves under \`~/gt/\` |
+| Target parent resolves under \`~/gt/\` | Resolved target path starts with \`~/gt/\` |
+| \`gt\` binary present AND target inside a tracked rig | \`command -v gt\` succeeds and \`gt status --json\` lists target as a rig path |
+
+If any check fails, print:
+
+> Gas Town detected — this setup would conflict with \`gt\`'s rig topology.
+> Use \`gt rig add <repo-url>\` instead. Exiting without changes.
+
+…and exit. Do not proceed under any flag.
+
+## Phase 1: Parse arguments and detect input mode
+
+Possible input shapes:
+
+| Input | Mode |
+|-------|------|
+| Git URL (\`https://...\` or \`git@...\`) | **fresh-clone** |
+| Path to a regular clone with \`.git/\` (not already inside a worktree layout) | **convert** |
+| Path inside an existing \`<repo>/main\` (one level deep) | **add-main-copy** (just adds another \`main.N\`) |
+| No argument | Ask the user interactively |
+
+For fresh-clone and convert modes, derive \`<repo-name>\` from the URL or
+existing clone's \`origin\` remote (strip trailing \`.git\`). Default
+\`<target-parent-dir>\` to the current working directory.
+
+Show the user the resolved plan before doing anything destructive:
+
+\`\`\`
+Mode:        <fresh-clone | convert | add-main-copy>
+Repo name:   <repo-name>
+Target:      <parent>/<repo-name>/main
+Source:      <url or existing path>
+\`\`\`
+
+Ask for confirmation. Abort on "no".
+
+## Phase 2: Execute
+
+### Fresh-clone mode
+
+\`\`\`bash
+mkdir -p "<parent>/<repo-name>"
+git clone "<repo-url>" "<parent>/<repo-name>/main"
+cd "<parent>/<repo-name>/main"
+\`\`\`
+
+### Convert mode
+
+Refuse to convert if the source clone:
+
+- has uncommitted changes (\`git status --porcelain\` non-empty)
+- has existing worktrees registered (\`git worktree list\` shows more than one)
+- is already inside another worktree layout (parent dir already named like a repo with sibling worktrees)
+
+Otherwise:
+
+\`\`\`bash
+mkdir -p "<parent>/<repo-name>"
+mv "<existing-clone>" "<parent>/<repo-name>/main"
+cd "<parent>/<repo-name>/main"
+\`\`\`
+
+### Add-main-copy mode
+
+Used when the user wants \`main.2\`, \`main.3\`, etc. — local copies of the
+default branch for trunk-based parallel work:
+
+\`\`\`bash
+# From inside <repo>/main:
+N=$(ls ../ | grep -E '^main(\\.[0-9]+)?$' | wc -l)   # count existing main copies
+git worktree add "../main.$((N+1))" main
+\`\`\`
+
+The new worktree shares the same branch as \`main\`. This is intentional —
+trunk-based flow lets two sessions iterate on the same branch with separate
+working states. Use with care; coordinate which copy is "the one" that
+pushes.
+
+## Phase 3: Sanity check
+
+\`\`\`bash
+git worktree list
+\`\`\`
+
+The primary worktree should be \`<repo-name>/main\`. Any \`main.N\` copies
+should appear with the same branch name as \`main\`.
+
+## Phase 4: Tell the user what's next
+
+\`\`\`
+✓ Layout ready at <parent>/<repo-name>/
+
+Add a feature worktree:   /worktree-add <branch-name-or-issue-url>
+Clean up merged worktrees: /worktree-cleanup
+Add another main copy:    /worktree-setup (from inside <repo>/main)
+\`\`\`
 "
 `;

@@ -14,7 +14,7 @@
 [![Made with Claude Code](https://img.shields.io/badge/Made%20with-Claude%20Code-blueviolet)](https://claude.ai/code)
 [![Contributors](https://img.shields.io/github/contributors/wbern/agent-instructions)](https://github.com/wbern/agent-instructions/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/wbern/agent-instructions/pulls)
-[![Commands](https://img.shields.io/badge/commands-29-blue)](https://github.com/wbern/agent-instructions#available-commands)
+[![Commands](https://img.shields.io/badge/commands-31-blue)](https://github.com/wbern/agent-instructions#available-commands)
 
 [![Supports Claude Code](https://img.shields.io/badge/Supports-Claude%20Code-D97757?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
 [![Supports OpenCode](https://img.shields.io/badge/Supports-OpenCode-FF6B35)](https://opencode.ai/docs/commands/)
@@ -261,6 +261,7 @@ flowchart TB
 
 ### Worktree Management
 
+- `/worktree-setup` - Initial setup of a repo for the worktree-friendly [repo]/main layout, with optional main.2/main.3 parallel copies for trunk-based work
 - `/worktree-add` - Add a new git worktree from branch name or issue URL, copy settings, install deps, and open in current IDE
 - `/worktree-cleanup` - Clean up merged worktrees by verifying PR/issue status, consolidating settings, and removing stale worktrees
 
@@ -273,6 +274,7 @@ flowchart TB
 - `/research` - Research a problem in parallel via web docs, web search, codebase exploration, and deep ultrathink
 - `/commitlint-checklist-nodejs` - Audit commit hook automation for Node.js projects
 - `/upgrade-deps` - Check for dependency upgrades and assess safety before updating
+- `/gastown-setup` - Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
 
 ## Getting Started
 
