@@ -1,0 +1,101 @@
+#!/usr/bin/env expect -f
+# Drives the interactive `agent-instructions` installer for the README demo.
+#
+# Spawns the CLI in a real pty so the @clack/prompts widgets render normally,
+# then sends keystrokes to walk through each prompt:
+#
+#   agent  → "Both" (down x 3 + enter)
+#   scope  → "Project" (enter, the default)
+#   prefix → skip (enter)
+#   flags  → none (enter)
+#   commands → accept defaults (enter)
+#   allowed-tools → skip (enter)
+#   skills → accept defaults (enter)
+#
+# Usage: scenario.exp <path-to-cli.js>
+#
+# The recorder is responsible for bootstrapping the workspace (mkdir +
+# git init) silently before invoking this script.
+
+set timeout 30
+
+if {[llength $argv] != 1} {
+    puts "usage: scenario.exp <path-to-cli.js>"
+    exit 2
+}
+set cli [lindex $argv 0]
+
+# Pause durations — adjust to taste. TYPE_PAUSE governs the beat between
+# arrow-key presses; FIELD_PAUSE is the breath before answering each prompt.
+set TYPE_PAUSE [expr {[info exists env(TYPE_PAUSE)] ? $env(TYPE_PAUSE) : "0.25"}]
+set FIELD_PAUSE [expr {[info exists env(FIELD_PAUSE)] ? $env(FIELD_PAUSE) : "1.8"}]
+# Extra dwell on the commands picker so viewers can actually read the tree.
+set READ_PAUSE [expr {[info exists env(READ_PAUSE)] ? $env(READ_PAUSE) : "3.5"}]
+
+proc nap {dur} { exec sleep $dur }
+
+# Hide the "spawn ..." line that expect echoes to stdout — it would otherwise
+# sit above the CLI banner in the recording.
+log_user 0
+spawn node $cli
+log_user 1
+# Clear screen so the CLI's banner renders from the top.
+send_user "\033\[2J\033\[H"
+
+# --- Agent: pick "Both" (4th option, so 3 arrow-downs) ---
+expect -re "Select target agent"
+nap $FIELD_PAUSE
+for {set i 0} {$i < 3} {incr i} {
+    send -- "\033\[B"
+    nap $TYPE_PAUSE
+}
+nap $FIELD_PAUSE
+send -- "\r"
+
+# --- Scope: keep default (Project/Repository) ---
+expect -re "Select installation scope"
+nap $FIELD_PAUSE
+send -- "\r"
+
+# --- Prefix: skip ---
+expect -re "Command prefix"
+nap $FIELD_PAUSE
+send -- "\r"
+
+# --- Feature flags: skip ---
+expect -re "feature flags"
+nap $FIELD_PAUSE
+send -- "\r"
+
+# --- Commands: dwell so the tree of slash commands is readable, then accept ---
+expect -re "Select commands to install"
+nap $READ_PAUSE
+send -- "\r"
+
+# --- Allowed tools (only shown when claude is in the mix) + Skills ---
+# Either prompt may appear next; either way, enter accepts the default.
+expect {
+    -re "allowed tools" {
+        nap $FIELD_PAUSE
+        send -- "\r"
+        exp_continue
+    }
+    -re "generate as skills" {
+        nap $FIELD_PAUSE
+        send -- "\r"
+    }
+}
+
+# --- Installation runs; wait for the success banner ---
+expect {
+    -re "Installed \[0-9\]+ commands" {
+        # Let the final lines render
+        nap 1.5
+    }
+    timeout {
+        puts "\ntimeout waiting for install to complete"
+        exit 1
+    }
+}
+
+expect eof

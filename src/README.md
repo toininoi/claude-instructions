@@ -28,6 +28,13 @@
 [![Supports OpenCode](https://img.shields.io/badge/Supports-OpenCode-FF6B35)](https://opencode.ai/docs/commands/)
 [![Supports Codex](https://img.shields.io/badge/Supports-Codex-10A37F?logo=openai&logoColor=white)](https://github.com/openai/codex)
 
+<p align="center"><img src="docs/demo.gif" alt="demo"></p>
+
+(One command installs TDD slash commands into a fresh project for Claude Code
++ OpenCode, then a peek at what landed. Reproduce with
+[`./scripts/demo/record_demo.sh`](scripts/demo/record_demo.sh) — needs
+`asciinema` and `agg` on PATH.)
+
 > "TDD helps you to pay attention to the right issues at the right time so you can make your designs cleaner, you can refine your designs as you learn." — Kent Beck
 
 AI coding agents like [Claude Code](https://docs.anthropic.com/en/docs/claude-code/slash-commands), [OpenCode](https://opencode.ai/docs/commands/), and [Codex](https://developers.openai.com/codex/skills) can be extended with project- or user-level instruction files. Claude Code and OpenCode expose them as **slash commands** (`/foo` → contents of `foo.md`). Codex exposes them as **skills** (`$foo` to mention, or `/skills` to list — Codex does not support user-defined `/foo` slash commands). This repo provides ready-made content for Test-Driven Development workflows that installs into each agent's native mechanism.

@@ -32,6 +32,14 @@
 [![Supports OpenCode](https://img.shields.io/badge/Supports-OpenCode-FF6B35)](https://opencode.ai/docs/commands/)
 [![Supports Codex](https://img.shields.io/badge/Supports-Codex-10A37F?logo=openai&logoColor=white)](https://github.com/openai/codex)
 
+<p align="center"><img src="docs/demo.gif" alt="demo"></p>
+
+(One command installs TDD slash commands into a fresh project for Claude Code
+
++ OpenCode, then a peek at what landed. Reproduce with
+[`./scripts/demo/record_demo.sh`](scripts/demo/record_demo.sh) — needs
+`asciinema` and `agg` on PATH.)
+
 > "TDD helps you to pay attention to the right issues at the right time so you can make your designs cleaner, you can refine your designs as you learn." — Kent Beck
 
 AI coding agents like [Claude Code](https://docs.anthropic.com/en/docs/claude-code/slash-commands), [OpenCode](https://opencode.ai/docs/commands/), and [Codex](https://developers.openai.com/codex/skills) can be extended with project- or user-level instruction files. Claude Code and OpenCode expose them as **slash commands** (`/foo` → contents of `foo.md`). Codex exposes them as **skills** (`$foo` to mention, or `/skills` to list — Codex does not support user-defined `/foo` slash commands). This repo provides ready-made content for Test-Driven Development workflows that installs into each agent's native mechanism.
@@ -76,9 +84,9 @@ agent-instructions --scope=user --agent=codex --overwrite
 
 The interactive installer lets you choose:
 
-- **Feature flags**: Enable optional integrations like [Beads MCP](https://github.com/steveyegge/beads)
-- **Scope**: User-level (global) or project-level installation
-- **Agent**: `claude`, `opencode`, `codex`, or `both` (claude + opencode)
++ **Feature flags**: Enable optional integrations like [Beads MCP](https://github.com/steveyegge/beads)
++ **Scope**: User-level (global) or project-level installation
++ **Agent**: `claude`, `opencode`, `codex`, or `both` (claude + opencode)
 
 After installation, restart your agent if it's currently running.
 
@@ -86,9 +94,9 @@ After installation, restart your agent if it's currently running.
 
 Codex CLI does not support user-defined `/foo` slash commands. When you install with `--agent=codex`, this package writes [Codex skills](https://developers.openai.com/codex/skills) to `~/.codex/skills/<name>/SKILL.md` (user scope) or `.codex/skills/<name>/SKILL.md` (project scope). Invoke them by:
 
-- Typing `$red`, `$green`, `$tdd`, etc. to mention a skill explicitly
-- Running `/skills` to list installed skills
-- Letting Codex pick implicitly — it can select a skill when your prompt matches its `description`
++ Typing `$red`, `$green`, `$tdd`, etc. to mention a skill explicitly
++ Running `/skills` to list installed skills
++ Letting Codex pick implicitly — it can select a skill when your prompt matches its `description`
 
 The `--agent=both` shortcut targets Claude Code + OpenCode only. To install for Codex, pass `--agent=codex` explicitly.
 
@@ -224,52 +232,52 @@ flowchart TB
 
 ### Planning
 
-- `/issue` - Analyze GitHub issue and create TDD implementation plan
-- `/create-issues` - Create implementation plan from feature/requirement with PRD-style discovery and TDD acceptance criteria
++ `/issue` - Analyze GitHub issue and create TDD implementation plan
++ `/create-issues` - Create implementation plan from feature/requirement with PRD-style discovery and TDD acceptance criteria
 
 ### Test-Driven Development
 
-- `/spike` - Execute TDD Spike Phase - exploratory coding to understand problem space before TDD
-- `/tdd` - Remind agent about TDD approach and continue conversation
-- `/red` - Execute TDD Red Phase - write ONE failing test
-- `/green` - Execute TDD Green Phase - write minimal implementation to pass the failing test
-- `/refactor` - Execute TDD Refactor Phase - improve code structure while keeping tests green
-- `/cycle` - Execute complete TDD cycle - Red, Green, and Refactor phases in sequence
-- `/simplify` - Reduce code complexity while keeping tests green
-- `/tdd-review` - Review test suite quality against FIRST principles and TDD anti-patterns
++ `/spike` - Execute TDD Spike Phase - exploratory coding to understand problem space before TDD
++ `/tdd` - Remind agent about TDD approach and continue conversation
++ `/red` - Execute TDD Red Phase - write ONE failing test
++ `/green` - Execute TDD Green Phase - write minimal implementation to pass the failing test
++ `/refactor` - Execute TDD Refactor Phase - improve code structure while keeping tests green
++ `/cycle` - Execute complete TDD cycle - Red, Green, and Refactor phases in sequence
++ `/simplify` - Reduce code complexity while keeping tests green
++ `/tdd-review` - Review test suite quality against FIRST principles and TDD anti-patterns
 
 ### Workflow
 
-- `/commit` - Create a git commit following project standards
-- `/busycommit` - Create multiple atomic git commits, one logical change at a time
-- `/pr` - Creates a pull request using GitHub MCP
-- `/summarize` - Summarize conversation progress and next steps
-- `/gap` - Analyze conversation context for unaddressed items and gaps
-- `/code-review` - Code review using dynamic category detection and domain-specific analysis
-- `/polish` - Review and address issues in existing code - fix problems or justify skipping
++ `/commit` - Create a git commit following project standards
++ `/busycommit` - Create multiple atomic git commits, one logical change at a time
++ `/pr` - Creates a pull request using GitHub MCP
++ `/summarize` - Summarize conversation progress and next steps
++ `/gap` - Analyze conversation context for unaddressed items and gaps
++ `/code-review` - Code review using dynamic category detection and domain-specific analysis
++ `/polish` - Review and address issues in existing code - fix problems or justify skipping
 
 ### Ship / Show / Ask
 
-- `/pr-ship` - Ship code directly to main - for small, obvious changes that don't need review
-- `/pr-show` - Show code to team with auto-merge - for changes that should be visible but don't need approval
-- `/pr-ask` - Request team review and approval - for complex changes needing discussion
++ `/pr-ship` - Ship code directly to main - for small, obvious changes that don't need review
++ `/pr-show` - Show code to team with auto-merge - for changes that should be visible but don't need approval
++ `/pr-ask` - Request team review and approval - for complex changes needing discussion
 
 ### Worktree Management
 
-- `/worktree-setup` - Initial setup of a repo for the worktree-friendly [repo]/main layout, with optional main.2/main.3 parallel copies for trunk-based work
-- `/worktree-add` - Add a new git worktree from branch name or issue URL, copy settings, install deps, and open in current IDE
-- `/worktree-cleanup` - Clean up merged worktrees by verifying PR/issue status, consolidating settings, and removing stale worktrees
++ `/worktree-setup` - Initial setup of a repo for the worktree-friendly [repo]/main layout, with optional main.2/main.3 parallel copies for trunk-based work
++ `/worktree-add` - Add a new git worktree from branch name or issue URL, copy settings, install deps, and open in current IDE
++ `/worktree-cleanup` - Clean up merged worktrees by verifying PR/issue status, consolidating settings, and removing stale worktrees
 
 ### Utilities
 
-- `/beepboop` - Communicate AI-generated content with transparent attribution
-- `/add-command` - Guide for creating new slash commands
-- `/kata` - Generate a TDD practice challenge with boilerplate test setup
-- `/create-adr` - Create a new Architecture Decision Record (ADR)
-- `/research` - Research a problem in parallel via web docs, web search, codebase exploration, and deep ultrathink
-- `/commit-hook-checklist` - Audit commit-hook automation as gates against AI slop and broken commits (Node.js, Go, polyglot)
-- `/upgrade-deps` - Check for dependency upgrades and assess safety before updating
-- `/gastown-setup` - Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
++ `/beepboop` - Communicate AI-generated content with transparent attribution
++ `/add-command` - Guide for creating new slash commands
++ `/kata` - Generate a TDD practice challenge with boilerplate test setup
++ `/create-adr` - Create a new Architecture Decision Record (ADR)
++ `/research` - Research a problem in parallel via web docs, web search, codebase exploration, and deep ultrathink
++ `/commit-hook-checklist` - Audit commit-hook automation as gates against AI slop and broken commits (Node.js, Go, polyglot)
++ `/upgrade-deps` - Check for dependency upgrades and assess safety before updating
++ `/gastown-setup` - Bootstrap a new Gas Town installation, optionally with the wbern/gastown-me-and-my-crew preset for manual-mode operation
 
 ## Getting Started
 
@@ -349,10 +357,10 @@ Claude analyzes commits, creates a PR with summary and test plan.
 
 ### What to Expect
 
-- **`/red`** - Claude writes ONE failing test based on your description
-- **`/green`** - Claude writes minimal implementation to pass the current failing test
-- **`/refactor`** - Claude improves code structure without changing behavior
-- **`/cycle`** - Claude runs all three phases in sequence for a complete feature
++ **`/red`** - Claude writes ONE failing test based on your description
++ **`/green`** - Claude writes minimal implementation to pass the current failing test
++ **`/refactor`** - Claude improves code structure without changing behavior
++ **`/cycle`** - Claude runs all three phases in sequence for a complete feature
 
 The commands enforce TDD discipline: you can't refactor with failing tests, can't write multiple tests at once, and implementation must match test requirements.
 
@@ -533,5 +541,5 @@ Example kata from [Cyber-Dojo](https://cyber-dojo.org/).
 
 ## Related Projects
 
-- [citypaul/.dotfiles](https://github.com/citypaul/.dotfiles) - Claude Code configuration with TDD workflows and custom commands
-- [nizos/tdd-guard](https://github.com/nizos/tdd-guard) - Original TDD Guard instructions for Claude
++ [citypaul/.dotfiles](https://github.com/citypaul/.dotfiles) - Claude Code configuration with TDD workflows and custom commands
++ [nizos/tdd-guard](https://github.com/nizos/tdd-guard) - Original TDD Guard instructions for Claude
